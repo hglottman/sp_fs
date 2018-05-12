@@ -59,24 +59,29 @@ app.delete('/posts/:id', function (req, res) {
 });
 
 
-
-
-// Todo.findByIdAndRemove(req.params.todoId, (err, todo) => {  
-//   // As always, handle any potential errors:
-//   if (err) return res.status(500).send(err);
-//   // We'll create a simple object to send back with a message and the id of the document that was removed
-//   // You can really do this however you want, though.
-//   const response = {
-//       message: "Todo successfully deleted",
-//       id: todo._id
-//   };
-//   return res.status(200).send(response);
-// });
-
-
-
-
 // 4) to handle adding a comment to a post
+debugger;
+app.post('/posts/:id/comments', function (req, res) {
+  var id = req.params.id;
+  var newComment = new Comment(req.body.text, req.body.user)
+  Post.findByIdAndUpdate(id, { $push: { comments: newComment } }).exec(function (err, post, newComment) {
+    if (err) {
+      console.log(err)
+    } else {
+      Post.find({}).exec(function (err, posts) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send(posts)
+        }
+      })
+    }
+  })
+})
+
+
+
+
 // 5) to handle deleting a comment from a post
 
 app.listen(SERVER_PORT, () => {

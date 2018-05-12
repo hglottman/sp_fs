@@ -39,14 +39,21 @@ class PostsRepository {
 
 
     addComment(newComment, postIndex) {
-        let postId = this.posts[index]._id;
-        return $.post('/posts/' + postId + '/comments', { text: commentText, user: userName })
-            .then((savedComment) => {
-                console.log(savedComment);
-                this.posts[postIndex].comments.push(newComment);
-                return savedComment;
-            });
-        };
+        let postId = this.posts[postIndex]._id;
+        return $.ajax({
+            method:"POST", 
+            url:'/posts/' + postId + '/comments',
+            data: newComment
+        .then((data) => {
+            console.log(data)
+                newComment._id = data.id
+                this.posts[postIndex].comments.push(newComment._id, newComment);  
+                return (newComment._id, newComment);
+        })
+    })  
+    };
+
+
 
 
         deleteComment(postIndex, commentIndex) {
