@@ -60,30 +60,30 @@ app.delete('/posts/:id', function (req, res) {
 
 
 // 4) to handle adding a comment to a post
-debugger;
 app.post('/posts/:id/comments', function (req, res) {
   var id = req.params.id;
-  var newComment = new Comment(req.body.text, req.body.user)
-  Post.findByIdAndUpdate(id, { $push: { comments: newComment } }).exec(function (err, post, newComment) {
-    if (err) {
-      console.log(err)
-    } else {
-      Post.find({}).exec(function (err, posts) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send(posts)
-        }
-      })
-    }
+  var newCom = req.body
+  Post.findByIdAndUpdate(id, {
+    $push: { comments: newCom }
+  }).exec(function (err, post, newCom) {
+    Post.find({}).exec(function (err, posts) {
+      res.send(posts)
+    })
   })
 })
 
 
+  // 5) to handle deleting a comment from a post
+  app.delete('/posts/del-comments/:id/:comId', function (req, res){
+    id = req.params.id;
+    comId = req.params.comId;
+    Post.update({ _id: id},{$pull: { comments : {_id : comId} } },function (err, posts) {
+      res.send(posts)
+    })
+  })
 
 
-// 5) to handle deleting a comment from a post
 
-app.listen(SERVER_PORT, () => {
-  console.log("Server started on port " + SERVER_PORT);
-});
+  app.listen(SERVER_PORT, () => {
+    console.log("Server started on port " + SERVER_PORT);
+  });
